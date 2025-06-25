@@ -1,6 +1,5 @@
 import streamlit as st
 from langchain_helper import get_qa_chain, create_vector_db, generate_random_question_from_vectordb
-# from langchain_community.cross_encoders import HuggingFaceCrossEncoder # For similarity comparison
 from sentence_transformers import CrossEncoder
 
 # --- Mock credential store ---
@@ -25,29 +24,38 @@ if "correct_quiz_answer" not in st.session_state:
 if "user_quiz_answer" not in st.session_state:
     st.session_state.user_quiz_answer = ""
 
-# --- Title ---
-st.title("Smart Quiz")
+# --- Layout for Title and Login/Logout in Top Right ---
+# This uses columns to place the title on the left and login/logout on the right
+col_title, col_login = st.columns([3, 1]) # Adjust ratios as needed for your title vs. login area
 
-# --- Logout Option ---
-if st.session_state.authenticated:
-    st.write(f"Logged in as: **{st.session_state.username}**")
-    if st.button("Logout"):
-        st.session_state.authenticated = False
-        st.session_state.username = ""
-        st.rerun()
+with col_title:
+    st.title("Netbrain") # Retained the user's specified title
 
-# --- Login Section ---
-with st.expander("🔐 Login"):
-    username = st.text_input("Username", key="login_user")
-    password = st.text_input("Password", type="password", key="login_pass")
-    if st.button("Login"):
-        if username in AUTHORIZED_USERS and AUTHORIZED_USERS[username] == password:
-            st.session_state.authenticated = True
-            st.session_state.username = username
-            st.success("Login successful!")
-            st.rerun()
-        else:
-            st.error("Invalid credentials")
+with col_login:
+    # Use a small form for login in the top-right
+    if not st.session_state.authenticated:
+        with st.form("login_form_top_right"):
+            # A small heading for the login area
+            st.markdown("<h5 style='text-align: right; color: grey;'>Login</h5>", unsafe_allow_html=True)
+            username = st.text_input("Username", key="login_user_top", label_visibility="collapsed", placeholder="Username")
+            password = st.text_input("Password", type="password", key="login_pass_top", label_visibility="collapsed", placeholder="Password")
+            submitted = st.form_submit_button("Login")
+
+            if submitted:
+                if username in AUTHORIZED_USERS and AUTHORIZED_USERS[username] == password:
+                    st.session_state.authenticated = True
+                    st.session_state.username = username
+                    st.success("Login successful!", icon="✅") # Added icon for better feedback
+                    st.rerun() # Rerun to update the UI immediately
+                else:
+                    st.error("Invalid credentials", icon="❌") # Added icon for better feedback
+    else:
+        # Display logout option if authenticated
+        st.write(f"Logged in as: **{st.session_state.username}**")
+        if st.button("Logout", key="logout_button_top_right"):
+            st.session_state.authenticated = False
+            st.session_state.username = ""
+            st.rerun() # Rerun to update the UI immediately
 
 # --- Main Q&A Interface ---
 st.header("General Q&A")
@@ -61,13 +69,14 @@ with col1:
             st.session_state.question = question
             with st.spinner("Finding answer..."):
                 chain = get_qa_chain()
-                response = chain(question)
+                # Corrected: get_qa_chain expects a dictionary with a 'query' key
+                response = chain({"query": question})
             st.header("Answer")
             st.write(response["result"])
 with col2:
     if st.button("Clear Q&A", key="clear_main_qa"): # Changed key for uniqueness
         st.session_state.question = ""
-#        st.session_state.question_input = "" # Clear the text_input as well
+        st.session_state.question_input = "" # Uncommented to clear the text_input as well
         st.rerun()
 
 # --- New Quiz Section ---
@@ -79,7 +88,7 @@ if not st.session_state.quiz_active:
         # Generate a random question
         with st.spinner("Generating question..."):
             random_question_text = generate_random_question_from_vectordb()
-            
+
             # Get the "correct" answer from the RAG chain for comparison later
             qa_chain = get_qa_chain()
             correct_answer_response = qa_chain({"query": random_question_text})
@@ -105,9 +114,8 @@ else:
                 st.warning("Please type your answer before submitting.")
             else:
                 # Compare answers
-                # model = HuggingFaceCrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')
                 model = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')
-                
+
                 # We compare user's answer against the RAG's answer
                 # A higher score means closer semantic meaning
                 similarity_score = model.predict([
