@@ -32,27 +32,26 @@ with col_title:
     st.title("Netbrain") # Retained the user's specified title
 
 with col_login:
-    # Use a small form for login in the top-right
+    # Use st.popover for a "pop-up" login window
     if not st.session_state.authenticated:
-        with st.form("login_form_top_right"):
-            # A small heading for the login area
-            st.markdown("<h5 style='text-align: right; color: grey;'>Login</h5>", unsafe_allow_html=True)
-            username = st.text_input("Username", key="login_user_top", label_visibility="collapsed", placeholder="Username")
-            password = st.text_input("Password", type="password", key="login_pass_top", label_visibility="collapsed", placeholder="Password")
-            submitted = st.form_submit_button("Login")
-
-            if submitted:
+        with st.popover("Login", use_container_width=True): # "Login" acts as the clickable button
+            st.markdown("<h5>Login to Netbrain</h5>", unsafe_allow_html=True) # Title inside popover
+            username = st.text_input("Username", key="popover_login_user") # Unique key for popover input
+            password = st.text_input("Password", type="password", key="popover_login_pass") # Unique key for popover input
+            
+            # The login button inside the popover
+            if st.button("Submit Login", key="popover_submit_login"): # Unique key for popover button
                 if username in AUTHORIZED_USERS and AUTHORIZED_USERS[username] == password:
                     st.session_state.authenticated = True
                     st.session_state.username = username
-                    st.success("Login successful!", icon="✅") # Added icon for better feedback
-                    st.rerun() # Rerun to update the UI immediately
+                    st.success("Login successful!", icon="✅") 
+                    st.rerun() # Rerun to dismiss popover and show logged-in state
                 else:
-                    st.error("Invalid credentials", icon="❌") # Added icon for better feedback
+                    st.error("Invalid credentials", icon="❌")
     else:
-        # Display logout option if authenticated
+        # If authenticated, show logout
         st.write(f"Logged in as: **{st.session_state.username}**")
-        if st.button("Logout", key="logout_button_top_right"):
+        if st.button("Logout", key="logout_button_top_right"): # Retained key from previous iteration
             st.session_state.authenticated = False
             st.session_state.username = ""
             st.rerun() # Rerun to update the UI immediately
@@ -63,7 +62,7 @@ st.text_input("Ask a question:", key="question_input", value=st.session_state.qu
 
 col1, col2 = st.columns([1, 1])
 with col1:
-    if st.button("Submit Question", key="submit_main_qa"): # Changed key for uniqueness
+    if st.button("Submit Question", key="submit_main_qa"): # Retained key from previous iteration
         question = st.session_state.question_input
         if question.strip():
             st.session_state.question = question
@@ -74,7 +73,7 @@ with col1:
             st.header("Answer")
             st.write(response["result"])
 with col2:
-    if st.button("Clear Q&A", key="clear_main_qa"): # Changed key for uniqueness
+    if st.button("Clear Q&A", key="clear_main_qa"): # Retained key from previous iteration
         st.session_state.question = ""
         st.session_state.question_input = "" # Uncommented to clear the text_input as well
         st.rerun()
