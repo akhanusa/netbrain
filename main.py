@@ -105,7 +105,7 @@ else:
 
     st.text_area("Your Answer:", key="user_quiz_answer_input", value=st.session_state.user_quiz_answer, height=150)
 
-    col_quiz1, col_quiz2 = st.columns([1,1])
+    col_quiz1,col_quiz3 col_quiz2 = st.columns([1,1,1])
     with col_quiz1:
         if st.button("Submit Quiz Answer"):
             st.session_state.user_quiz_answer = st.session_state.user_quiz_answer_input
@@ -140,7 +140,9 @@ else:
             st.session_state.correct_quiz_answer = ""
             st.session_state.user_quiz_answer = ""
             st.rerun()
-
+    with clol_quiz3:
+        if st.button("Next")
+            pass
 
 # --- Admin Controls ---
 def show_admin_controls():
