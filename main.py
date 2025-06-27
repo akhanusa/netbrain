@@ -141,8 +141,21 @@ else:
             st.session_state.user_quiz_answer = ""
             st.rerun()
     with col_quiz3:
-        if st.button("Next"):
-            pass
+        if st.button("Next question"):
+        # Generate a random question
+            with st.spinner("Generating question..."):
+                random_question_text = generate_random_question_from_vectordb()
+
+                # Get the "correct" answer from the RAG chain for comparison later
+                qa_chain = get_qa_chain()
+                correct_answer_response = qa_chain({"query": random_question_text})
+                correct_answer_text = correct_answer_response["result"]
+
+            st.session_state.current_quiz_question = random_question_text
+            st.session_state.correct_quiz_answer = correct_answer_text
+            st.session_state.quiz_active = True
+            st.session_state.user_quiz_answer = "" # Reset user's previous answer
+            st.rerun()
 
 # --- Admin Controls ---
 def show_admin_controls():
