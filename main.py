@@ -141,7 +141,7 @@ else:
             st.session_state.user_quiz_answer = ""
             st.rerun()
     with col_quiz3:
-        if st.button("Next")
+        if st.button("Next"):
             pass
 
 # --- Admin Controls ---
