@@ -140,23 +140,31 @@ else:
             st.session_state.correct_quiz_answer = ""
             st.session_state.user_quiz_answer = ""
             st.rerun()
-    with col_quiz3:
-        if st.button("Next question"):
-        # Generate a random question
-            with st.spinner("Generating question..."):
-                random_question_text = generate_random_question_from_vectordb()
+     with col_quiz3:
+        # Use on_click callback for "Next question"
+        if st.button("Next question", on_click=next_question_callback):
+            # No logic needed directly here, as it's handled by the callback
+            pass
 
-                # Get the "correct" answer from the RAG chain for comparison later
-                qa_chain = get_qa_chain()
-                correct_answer_response = qa_chain({"query": random_question_text})
-                correct_answer_text = correct_answer_response["result"]
-            st.session_state.current_quiz_question = random_question_text
-            st.session_state.correct_quiz_answer = correct_answer_text
-            st.session_state.quiz_active = True
-            st.session_state.user_quiz_answer = ""          # Clears the primary value source
-            st.session_state.user_quiz_answer_input = ""    # Clears the widget's internal state
+def next_question_callback():
+    # Clear the user's previous answer
+    st.session_state.user_quiz_answer = ""
+    # Crucially, clear the widget's internal state tied to its key
+    st.session_state.user_quiz_answer_input = "" 
 
-            st.rerun()
+    # Generate a random question
+    with st.spinner("Generating question..."):
+        random_question_text = generate_random_question_from_vectordb()
+
+        # Get the "correct" answer from the RAG chain for comparison later
+        qa_chain = get_qa_chain()
+        correct_answer_response = qa_chain({"query": random_question_text})
+        correct_answer_text = correct_answer_response["result"]
+        
+    st.session_state.current_quiz_question = random_question_text
+    st.session_state.correct_quiz_answer = correct_answer_text
+    st.session_state.quiz_active = True
+    # No st.rerun() needed here, as the button click itself triggers a rerun after the callback
 
 # --- Admin Controls ---
 def show_admin_controls():
