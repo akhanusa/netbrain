@@ -140,7 +140,7 @@ else:
             st.session_state.correct_quiz_answer = ""
             st.session_state.user_quiz_answer = ""
             st.rerun()
-     with col_quiz3:
+    with col_quiz3:
         # Use on_click callback for "Next question"
         if st.button("Next question", on_click=next_question_callback):
             # No logic needed directly here, as it's handled by the callback
