@@ -153,7 +153,7 @@ else:
             st.session_state.current_quiz_question = random_question_text
             st.session_state.correct_quiz_answer = correct_answer_text
             st.session_state.quiz_active = True
-            st.session_state.user_quiz_answer = "" # Reset user's previous answer
+            #st.session_state.user_quiz_answer = "" # Reset user's previous answer
             st.text_area("Your Answer:", key="user_quiz_answer_input", value=st.session_state.user_quiz_answer, height=150)
             st.rerun()
 
