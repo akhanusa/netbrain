@@ -150,11 +150,11 @@ else:
                 qa_chain = get_qa_chain()
                 correct_answer_response = qa_chain({"query": random_question_text})
                 correct_answer_text = correct_answer_response["result"]
-            st.session_state.user_quiz_answer = ""
             st.session_state.current_quiz_question = random_question_text
             st.session_state.correct_quiz_answer = correct_answer_text
             st.session_state.quiz_active = True
             st.session_state.user_quiz_answer = "" # Reset user's previous answer
+            st.text_area("Your Answer:", key="user_quiz_answer_input", value=st.session_state.user_quiz_answer, height=150)
             st.rerun()
 
 # --- Admin Controls ---
