@@ -23,6 +23,11 @@ if "correct_quiz_answer" not in st.session_state:
     st.session_state.correct_quiz_answer = ""
 if "user_quiz_answer" not in st.session_state:
     st.session_state.user_quiz_answer = ""
+# Make sure the key for the text area itself is also initialized,
+# although it gets created by the widget if not present.
+if "user_quiz_answer_input" not in st.session_state:
+    st.session_state.user_quiz_answer_input = ""
+
 
 # --- Layout for Title and Login/Logout in Top Right ---
 # This uses columns to place the title on the left and login/logout on the right
@@ -97,6 +102,7 @@ if not st.session_state.quiz_active:
         st.session_state.correct_quiz_answer = correct_answer_text
         st.session_state.quiz_active = True
         st.session_state.user_quiz_answer = "" # Reset user's previous answer
+        st.session_state.user_quiz_answer_input = "" # <--- Added this line
         st.rerun()
 else:
     st.write("---")
@@ -139,6 +145,7 @@ else:
             st.session_state.current_quiz_question = ""
             st.session_state.correct_quiz_answer = ""
             st.session_state.user_quiz_answer = ""
+            st.session_state.user_quiz_answer_input = "" # <--- Added this line
             st.rerun()
     with col_quiz3:
         if st.button("Next question"):
@@ -153,6 +160,8 @@ else:
             st.session_state.current_quiz_question = random_question_text
             st.session_state.correct_quiz_answer = correct_answer_text
             st.session_state.quiz_active = True
+            st.session_state.user_quiz_answer = "" # <--- Add this line to clear the 'value' source
+            st.session_state.user_quiz_answer_input = "" # <--- Add this line to clear the widget's internal state
             st.rerun()
 
 # --- Admin Controls ---
