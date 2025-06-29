@@ -99,7 +99,7 @@ with col1:
             st.header("Answer")
             st.write(response["result"])
 with col2:
-    if st.button("Clear Q&A", on_click=clear_qa_callbacka): # Retained key from previous iteration
+    if st.button("Clear Q&A", on_click=clear_qa_callback): # Retained key from previous iteration
         pass
 
 # --- New Quiz Section ---
