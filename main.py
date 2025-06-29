@@ -8,6 +8,7 @@ def clear_qa_callback():
     # Crucially, clear the widget's internal state tied to its key
     st.session_state.user_quiz_answer_input = "" 
     st.session_state.question = ""
+    st.session_state.question_input = ""
 
 def next_question_callback():
     # Clear the user's previous answer
