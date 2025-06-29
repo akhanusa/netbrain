@@ -2,6 +2,12 @@ import streamlit as st
 from langchain_helper import get_qa_chain, create_vector_db, generate_random_question_from_vectordb
 from sentence_transformers import CrossEncoder
 
+def clear_qa_callback():
+    # Clear the user's previous answer
+    st.session_state.user_quiz_answer = ""
+    # Crucially, clear the widget's internal state tied to its key
+    st.session_state.user_quiz_answer_input = "" 
+
 def next_question_callback():
     # Clear the user's previous answer
     st.session_state.user_quiz_answer = ""
@@ -93,10 +99,8 @@ with col1:
             st.header("Answer")
             st.write(response["result"])
 with col2:
-    if st.button("Clear Q&A", key="clear_main_qa"): # Retained key from previous iteration
-        st.session_state.question = ""
-        st.session_state.question_input = "" # Uncommented to clear the text_input as well
-        st.rerun()
+    if st.button("Clear Q&A", on_click=clear_qa_callbacka): # Retained key from previous iteration
+        pass
 
 # --- New Quiz Section ---
 st.markdown("---")
