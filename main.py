@@ -153,7 +153,7 @@ else:
                 st.write(f"**Correct Answer (from Knowledgebase):** {st.session_state.correct_quiz_answer}")
                 st.write(f"**Similarity Score:** {similarity_score:.2f} (closer to 1 means more similar)")
 
-                if similarity_score >= 0.6: # Threshold can be adjusted
+                if similarity_score >= 0.65: # Threshold can be adjusted
                     st.success("Great job! Your answer is very similar to the knowledgebase's information.")
                 elif similarity_score >= 0.4:
                     st.warning("Your answer has some similarities, but could be improved.")
